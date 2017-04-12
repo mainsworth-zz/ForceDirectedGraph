@@ -6,14 +6,17 @@
 import java.text.DecimalFormat;
 
 //object references
-JSONArray castValues;
+JSONObject data;
+
+ForceGraph graph;
 
 void setup() {
- size(1200,800);
+ size(800,800);
  background(255);
  textSize(14);
  smooth();
   selectInput("Select a file to process:", "fileSelected");
+  graph = new ForceGraph();
      
 }
 
@@ -23,27 +26,26 @@ void fileSelected(File selection) {
     println("Window was closed or the user hit cancel.");
   } else {
     println("User selected " + selection.getAbsolutePath());
-    castValues = loadJSONArray(selection.getAbsolutePath());
+    data = loadJSONObject(selection.getAbsolutePath());
   }
   
 }
 
 
-void draw()
-{
-  if(castValues == null)
-  {
+void draw() {
+  
+  if(data == null) {
     
   }
   
-  else
-  {
-      for(int i = 0; i < castValues.size(); i++)
-      {
-        JSONObject character = castValues.getJSONObject(i);
-         println(character.getString("id")); 
-        
-      }
+  else {
+      rectMode(CORNERS);
+      fill(205);
+      rect(0, 0, width, height);
+      graph.loadData(data);
+      graph.setPosition(20, 20, width-175, height-175);
+      graph.draw();
+//      graph.printCast();
     
   }
   
