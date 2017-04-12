@@ -45,7 +45,6 @@ void draw() {
       graph.setPosition(20, 20, width-175, height-175);
       graph.loadData(data);
       graph.draw();
-      graph.printCast();
     
   }
   
