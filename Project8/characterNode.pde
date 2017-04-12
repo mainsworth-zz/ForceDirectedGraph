@@ -1,20 +1,27 @@
 
 class characterNode{
-   JSONObject character;
-   int x, y;
+
+   ForceGraph graphReference;
   
-  characterNode(JSONObject data) {
+   JSONObject character;
+   JSONArray relationships;
+   int x, y;
+   int size = 30;
+  
+  characterNode(JSONObject data, JSONArray _relationships, ForceGraph reference) {
+    graphReference = reference;
     character = data; 
-    float x_value = random(width);
-    float y_value = random(height);
+    relationships = _relationships;
+    float x_value = random(reference.d0+size, reference.d0 + reference.w-size);
+    float y_value = random(reference.e0+size, reference.e0 + reference.h-size);
     x = int(x_value);
     y = int(y_value);
     
   }
   
   void createNode() {
-   fill(255);
-   ellipse(x, y, 50, 50); 
+   fill(205);
+   ellipse(x, y, size, size); 
   }
   
   void printCharacter() {

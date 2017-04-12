@@ -42,10 +42,10 @@ void draw() {
       rectMode(CORNERS);
       fill(205);
       rect(0, 0, width, height);
-      graph.loadData(data);
       graph.setPosition(20, 20, width-175, height-175);
+      graph.loadData(data);
       graph.draw();
-//      graph.printCast();
+      graph.printCast();
     
   }
   

@@ -1,9 +1,8 @@
 
-class ForceGraph{
+class ForceGraph {
   
-  JSONArray relationships;
   ArrayList<characterNode> cast = new ArrayList<characterNode>();
-  
+  boolean dataLoaded = false;
   // dimensions of the graph
   int d0, e0, w, h;
   
@@ -12,16 +11,32 @@ class ForceGraph{
   }
   
   void loadData(JSONObject data) {
-      if(data != null && relationships == null) {
+      if(data != null && !dataLoaded) {
       JSONArray characters = data.getJSONArray("nodes");
+      JSONArray relationships = data.getJSONArray("links");
+      
+      int k;
+      // find all the characters in the JSON file
       for(int i = 0; i < characters.size(); i++) {
+         k = 0; // resets the counter, to start new "links" array at 0
          JSONObject individual = characters.getJSONObject(i);
-         characterNode person = new characterNode(individual);
+         JSONArray links = new JSONArray();
+         
+         // check for the relationships this character has
+         for(int j = 0; j < relationships.size(); j++)
+         {
+            JSONObject chain = relationships.getJSONObject(i);
+            if(individual.getString("id") == chain.getString("source")){
+               links.setJSONObject(k, chain);
+               k++;
+            }
+         }
+         characterNode person = new characterNode(individual, links, this);
          cast.add(person);
          
        }
-      relationships = data.getJSONArray("links");
       println("Loaded data.");
+      dataLoaded = true;
     }
     
   }
@@ -53,8 +68,7 @@ class ForceGraph{
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
-      
-      fill(255);
+            fill(255);
       rectMode(CORNERS);
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
