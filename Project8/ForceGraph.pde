@@ -2,9 +2,26 @@
 class ForceGraph {
   
   ArrayList<characterNode> cast = new ArrayList<characterNode>(); // holds the references of the nodes in memory
+  
+  characterNode gravityNode;
+  
   boolean dataLoaded = false;
+  
   // dimensions of the graph
   int d0, e0, w, h;
+  
+  // color chart
+  color grey = color(205);
+  color groupOne = color(255, 0, 0);
+  color groupTwo = color(0, 255, 0);
+  color groupThree = color(0, 0, 255);
+  color groupFour = color(0,0,0);
+  color groupFive = color(0,0,0);
+  color groupSix = color(0,0,0);
+  color groupSeven = color(0,0,0);
+  color groupEight = color(0,0,0);
+  color groupNine = color(0,0,0);
+  color groupTen = color(0,0,0);
   
   ForceGraph() {
        
@@ -37,6 +54,52 @@ class ForceGraph {
          JSONObject individual = characters.getJSONObject(i);
          
          characterNode person = new characterNode(individual, this);
+         int colorCode = individual.getInt("group");
+         
+         switch (colorCode) {
+           
+           case 1: 
+                   person.setColor(groupOne);
+                   break;
+           
+           case 2: 
+                   person.setColor(groupTwo);
+                   break;
+           
+           case 3: 
+                   person.setColor(groupThree);
+                   break;
+           
+           case 4:
+                   person.setColor(groupFour);
+                   break;
+           
+           case 5: 
+                   person.setColor(groupFive);
+                   break;
+           
+           case 6: 
+                   person.setColor(groupSix);
+                   break;
+           
+           case 7: 
+                   person.setColor(groupSeven);
+                   break;
+           
+           case 8:
+                   person.setColor(groupEight);
+                   break;
+           
+           case 9:
+                   person.setColor(groupNine);
+                   break;
+           
+           case 10:
+                   person.setColor(groupTen);
+                   break;
+                   
+         }
+           
          cast.add(person);
          
        }
@@ -103,6 +166,33 @@ class ForceGraph {
     }
     
   }
+  
+  void repulsionFunction() {
+   
+    int x = 0;
+    int y = 0;
+    for (characterNode character : cast) {
+     
+        x = character.x;
+        y = character.y;
+        
+        if(x > width/2) {
+         x = x + 1; 
+        }
+        else if (x <= width/2){
+         x = x - 1; 
+        }
+        
+        if (y < height/2) {
+         y = y - 1; 
+        }
+        
+        else if (y >= height/2) {
+         y = y + 1; 
+        }
+        character.updatePosition(x-1, y-1);
+    }
+  }
   void draw() {
     
        // restricts the draw function to the dimensions of the graph
@@ -116,5 +206,6 @@ class ForceGraph {
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
       createCast();
       drawLines();
+      repulsionFunction();
   } 
 }

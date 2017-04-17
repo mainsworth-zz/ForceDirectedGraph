@@ -6,6 +6,9 @@ class characterNode {
    ArrayList<characterLink> relationships = new ArrayList<characterLink>();
    int x, y;
    int size = 30;
+   color nodeColor;
+  
+  
   
   characterNode(JSONObject data, ForceGraph reference) {
     graphReference = reference;
@@ -18,8 +21,14 @@ class characterNode {
   }
   
   void createNode() {
-   fill(205);
+   fill(nodeColor);
    ellipse(x, y, size, size); 
+  }
+  
+  
+  void setColor(color newColor) {
+   
+    nodeColor = newColor;
   }
   
   void addRelationship(String nameTarget, ArrayList<characterNode> cast) {
@@ -27,9 +36,8 @@ class characterNode {
       characterNode target = cast.get(i);
       
       // found target
-      println(target.character.getString("id") + " == " + nameTarget);
-      if(target.character.getString("id") == nameTarget) {
-         println("Found match.");
+//      println(target.character.getString("id") + " == " + nameTarget);
+      if(target.character.getString("id").equals(nameTarget)) {
          characterLink newRelationship = new characterLink(target);
          relationships.add(newRelationship);
          break;
@@ -49,7 +57,6 @@ class characterNode {
      y2 = link.target.y;
      
      line(x1, y1, x2, y2);
-     println(x1 + ", " + y1 + " and " + x2 + ", " + y2);
    }
     
   }
@@ -65,7 +72,23 @@ class characterNode {
     
   }
   
-  
+  void updatePosition(int _x, int _y) {
+
+    // binds to dimensions of graph
+   if ((x+size-5) < (graphReference.d0 + graphReference.w) && (x-size+5) > graphReference.d0) {     
+   
+     x = _x;
+ 
+   }
+   
+   if ((y+size-5) < graphReference.e0 + graphReference.h && (y-size+5) > graphReference.e0) {
+
+     y = _y; 
+    
+   }
+
+   
+  }
   
   
   
