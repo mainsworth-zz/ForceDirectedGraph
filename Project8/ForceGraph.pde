@@ -10,6 +10,8 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
+  int repulsionConstant = 1;
+  
   // color chart
   color grey = color(205);
   color groupOne = color(255, 0, 0);
@@ -171,26 +173,27 @@ class ForceGraph {
    
     int x = 0;
     int y = 0;
+
     for (characterNode character : cast) {
      
         x = character.x;
         y = character.y;
         
         if(x > width/2) {
-         x = x + 1; 
+         x = x + repulsionConstant; 
         }
         else if (x <= width/2){
-         x = x - 1; 
+         x = x - repulsionConstant; 
         }
         
         if (y < height/2) {
-         y = y - 1; 
+         y = y - repulsionConstant; 
         }
         
         else if (y >= height/2) {
-         y = y + 1; 
+         y = y + repulsionConstant; 
         }
-        character.updatePosition(x-1, y-1);
+        character.updatePosition(x, y);
     }
   }
   void draw() {
