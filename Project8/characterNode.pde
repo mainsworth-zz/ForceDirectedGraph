@@ -1,5 +1,5 @@
 
-class characterNode{
+class characterNode {
 
    ForceGraph graphReference;
    JSONObject character; // data structure for character values
@@ -44,7 +44,6 @@ class characterNode{
     int x1, x2, y1, y2;
     x1 = x;
     y1 = y;
-    println(relationships.size());
    for(characterLink link : relationships) {
      x2 = link.target.x;
      y2 = link.target.y;

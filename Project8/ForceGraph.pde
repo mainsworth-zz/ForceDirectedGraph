@@ -14,6 +14,11 @@ class ForceGraph {
       if(data != null && !dataLoaded) {
       JSONArray characters = data.getJSONArray("nodes");
       JSONArray relationships = data.getJSONArray("links");
+      for (int i = 0; i < relationships.size(); i++) {
+        JSONObject object = relationships.getJSONObject(i);
+        println(object.getString("source"));
+        
+      }
       populationCreation(characters);
       createRelationships(relationships);
 
@@ -47,8 +52,11 @@ class ForceGraph {
          // check for the relationships this character has
          for(int j = 0; j < relationships.size(); j++) {
            
-            JSONObject chain = relationships.getJSONObject(i);
-            if(individual.character.getString("id") == chain.getString("source")){
+            JSONObject chain = relationships.getJSONObject(j);
+            
+//            println(i + ", " + j + ": " + individual.character.getString("id") + " vs. " + chain.getString("source"));
+            if(individual.character.getString("id").equals(chain.getString("source"))){
+              println("Found link.");
                individual.addRelationship(chain.getString("target"), cast);
             }
          }
