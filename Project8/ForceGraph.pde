@@ -10,7 +10,7 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
-  float attractionConstant = 0.05;
+  float attractionConstant = 0.005;
   float repulsionConstant = 0.01;
   float springLength = 51.0;
   float timeStep = 0.75;
