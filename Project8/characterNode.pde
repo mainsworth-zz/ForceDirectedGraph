@@ -8,7 +8,7 @@ class characterNode {
    PVector coordinates = new PVector();
    
    int nodeSize = 30;
-   float mass = 5.0;
+   float mass = 35.0;
    PVector velocity = new PVector();
    color nodeColor;
    
@@ -93,10 +93,12 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-     characterNode character2 = cast.get(15);
+//     characterNode character2 = cast.get(15);
 
       
-//      for (characterNode character2 : cast) {
+      for (characterNode character2 : cast) {
+        if(coordinates.dist(character2.coordinates) != 0) {
+        println("True");
         directionalVector = coordinates.copy(); // P
 
         directionalVector.sub(character2.coordinates); // (P - Q as numerator)
@@ -105,13 +107,13 @@ class characterNode {
         value = repulsionConstant * mass * character2.mass;
 
         value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
-
+//        println("-: " + value);
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
 //        println("-: " + directionalVector.x + ", " + directionalVector.y);
         sumVectors.add(directionalVector);      
-
+        }
       
-//    }
+    }
 //    println(sumVectors.x + ", " + sumVectors.y);
     return sumVectors;
     
@@ -123,23 +125,25 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-     characterNode character2 = cast.get(15);
+//     characterNode character2 = cast.get(15);
 
       
-//      for (characterNode character2 : cast) {
+      for (characterNode character2 : cast) {
         directionalVector = character2.coordinates.copy(); // Q
 
         directionalVector.sub(coordinates); // (Q - P as numerator)
+//        println(character2.coordinates.dist(coordinates));
         directionalVector.div(character2.coordinates.dist(coordinates)); // vector normalized by the distance
        
-        value = attractionConstant * (character2.coordinates.dist(coordinates) - springLength); // attraction formula
-//        println(value);
+        value = attractionConstant * (coordinates.dist(character2.coordinates) - springLength); // attraction formula
+//       println("+: " + value);
 //        value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
 
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
 //        println("+: " + directionalVector.x + ", " + directionalVector.y);
         sumVectors.add(directionalVector);      
 
+      }
     return sumVectors;
   }
   
@@ -147,28 +151,31 @@ class characterNode {
    
     PVector rVector = calculateRepulsions(cast).copy();
 //    println(rVector.x + ", " + rVector.y);
-    PVector aVector = calculateAttractions(cast).copy();
+//    PVector aVector = calculateAttractions(cast).copy();
     
-    rVector.add(aVector);
+//    rVector.add(aVector);
     rVector.div(mass);
     rVector.mult(timeStep);
 //    rVector.add(
     velocity.add(rVector);
-   println(velocity.x + ", " + velocity.y);
-    
+//   println(velocity.x + ", " + velocity.y);
+
     return velocity;
    
   }
   
   void calculatePosition(ArrayList<characterNode> cast) {
     PVector timeStepVector = calculateVelocity(cast).copy();
+    characterNode character2 = cast.get(15);
+
     timeStepVector.mult(timeStep);
 //    print("timeStepVector : ");
 //    println(timeStepVector.x + ", " + timeStepVector.y);
 //    print("Added to coordinates: ");
-//    println(coordinates.x + ", " + coordinates.y);
-    updatePosition(timeStepVector);
-    
+
+//  if(coordinates.dist(character2.coordinates) > 65) {
+//    updatePosition(timeStepVector);
+ // }
   }
   
   void updatePosition(PVector newPosition) {
@@ -181,12 +188,7 @@ class characterNode {
     else if (newPosition.x > 0 && (coordinates.x + newPosition.x + nodeSize) <= graphReference.d0 + graphReference.w - nodeSize - 15) {
       coordinates.x += newPosition.x;
     }
-    // binds to dimensions of graph
-/*   if ((coordinates.x+nodeSize) <= (graphReference.d0 + graphReference.w) && (coordinates.x-nodeSize-15) >= graphReference.d0-5) {     
-   
-     coordinates.x += newPosition.x;
- 
-   }*/
+
    
    if( ((coordinates.y - newPosition.y - nodeSize - 5) >= graphReference.e0) && 
         ((coordinates.y + newPosition.y - nodeSize) <= graphReference.e0 + graphReference.h - nodeSize - 15)) {
@@ -196,23 +198,12 @@ class characterNode {
     else if (newPosition.y > 0 && (coordinates.y + newPosition.y + nodeSize) <= graphReference.e0 + graphReference.w - nodeSize - 15) {
       coordinates.y += newPosition.y;
     }
-/*   if ((coordinates.y+nodeSize) <= (graphReference.e0 + graphReference.h) && (coordinates.y-nodeSize-15) >= graphReference.e0-5) {
 
-     coordinates.y += newPosition.y; 
-    
-   }*/
 
    
   }
   
 
-  
-
-  
-  void draw() {
-
-  }
-  
   
   
 }

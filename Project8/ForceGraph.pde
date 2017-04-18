@@ -10,10 +10,10 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
-  float attractionConstant = .005;
-  float repulsionConstant = 25;
-  float springLength = 10.0;
-  float timeStep = 0.15;
+  float attractionConstant = 0.005;
+  float repulsionConstant = 0.1;
+  float springLength = 51.0;
+  float timeStep = 0.75;
   
   boolean placed = false;
   
@@ -174,34 +174,6 @@ class ForceGraph {
     
   }
   
-  // centers nodes
-  void attractionFunction() {
-   
-    float x = 0;
-    float y = 0;
-
-    for (characterNode character : cast) {
-     
-        x = character.coordinates.x;
-        y = character.coordinates.y;
-        
-        if(x > (d0 + w)/2) {
-         x -= attractionConstant; 
-        }
-        else if (x <= (d0 + w)/2){
-         x += attractionConstant; 
-        }
-        
-        if (y < (e0 + h)/2) {
-         y += attractionConstant; 
-        }
-        
-        else if (y >= (e0 + h)/2) {
-         y -= attractionConstant; 
-        }
-//        character.updatePosition(x, y);
-    }
-  }
   
  
   
@@ -215,8 +187,8 @@ class ForceGraph {
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
-      characterNode node = cast.get(5);
-      characterNode node2 = cast.get(15);
+//      characterNode node = cast.get(5);
+//      characterNode node2 = cast.get(15);
             fill(255);
       rectMode(CORNERS);
       
@@ -228,11 +200,11 @@ class ForceGraph {
 
 //      calculateAttractions();
 //      attractionFunction();
-//      for (characterNode node : cast) {
-         node.calculatePosition(cast);
+      for (characterNode node : cast) {
+        node.calculatePosition(cast);
          node.createNode();
-         node2.createNode();
-         node.draw();
-//      }
+//         node2.createNode();
+
+      }      
   } 
 }
