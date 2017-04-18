@@ -5,6 +5,7 @@ class ForceGraph {
   
   characterNode gravityNode;
   groupViewer viewer;
+  characterViewer charViewer;
   
   boolean dataLoaded = false;
   
@@ -15,6 +16,9 @@ class ForceGraph {
   float repulsionConstant = 100;
   float springLength = 51.0;
   float timeStep = 0.45;
+  
+  ArrayList<ArrayList<characterNode>> metaCasts = new ArrayList<ArrayList<characterNode>>(); // holds 10 arrays, one for each group
+  
   
   boolean placed = false;
   
@@ -56,6 +60,17 @@ class ForceGraph {
   
   // places characters into nodes, stored into ArrayList
   void populationCreation(JSONArray characters) {
+    ArrayList<characterNode> groupOneArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupTwoArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupThreeArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupFourArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupFiveArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupSixArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupSevenArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupEightArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupNineArray = new ArrayList<characterNode>();
+    ArrayList<characterNode> groupTenArray = new ArrayList<characterNode>();
+    
        
     // find all the characters in the JSON file
       for(int i = 0; i < characters.size(); i++) {
@@ -69,51 +84,61 @@ class ForceGraph {
            case 1: 
                    person.setColor(groupOne);
                    person.groupColor = groupOne;
+                   groupOneArray.add(person);
                    break;
            
            case 2: 
                    person.setColor(groupTwo);
                    person.groupColor = groupTwo;
+                   groupTwoArray.add(person);
                    break;
            
            case 3: 
                    person.setColor(groupThree);
                    person.groupColor = groupThree;
+                   groupThreeArray.add(person);
                    break;
            
            case 4:
                    person.setColor(groupFour);
                    person.groupColor = groupFour;
+                   groupFourArray.add(person);
                    break;
            
            case 5: 
                    person.setColor(groupFive);
                    person.groupColor = groupFive;
+                   groupFiveArray.add(person);
                    break;
            
            case 6: 
                    person.setColor(groupSix);
                    person.groupColor = groupSix;
+                   groupSixArray.add(person);
                    break;
            
            case 7: 
                    person.setColor(groupSeven);
                    person.groupColor = groupSeven;
+                   groupSevenArray.add(person);
                    break;
            
            case 8:
                    person.setColor(groupEight);
                    person.groupColor = groupEight;
+                   groupEightArray.add(person);
                    break;
            
            case 9:
                    person.setColor(groupNine);
                    person.groupColor = groupNine;
+                   groupNineArray.add(person);
                    break;
            
            case 10:
                    person.setColor(groupTen);
                    person.groupColor = groupTen;
+                   groupTenArray.add(person);
                    break;
                    
          }
@@ -121,6 +146,18 @@ class ForceGraph {
          cast.add(person);
          
        }
+       
+       metaCasts.add(groupOneArray);
+       metaCasts.add(groupTwoArray);
+       metaCasts.add(groupThreeArray);
+       metaCasts.add(groupFourArray);
+       metaCasts.add(groupFiveArray);
+       metaCasts.add(groupSixArray);
+       metaCasts.add(groupSevenArray);
+       metaCasts.add(groupEightArray);
+       metaCasts.add(groupNineArray);
+       metaCasts.add(groupTenArray);
+   
     
   }
   
@@ -166,6 +203,9 @@ class ForceGraph {
     h = _h;
     if(viewer == null) {
     viewer = new groupViewer(d0+w+5, e0, d0+w+150, e0+_h);
+    }
+    if(charViewer == null) {
+     charViewer = new characterViewer(d0, e0+h+10, d0+w+150, e0+h+135); 
     }
   }
   
@@ -224,5 +264,10 @@ class ForceGraph {
 
       }      
       viewer.draw();
+      int i = 0;
+       charViewer.fillRoles(metaCasts); 
+       
+      
+      charViewer.draw();
   } 
 }
