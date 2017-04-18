@@ -204,8 +204,8 @@ class ForceGraph {
     if(viewer == null) {
     viewer = new groupViewer(d0+w+5, e0, d0+w+150, e0+_h);
     }
-    if(charViewer == null) {
-     charViewer = new characterViewer(d0, e0+h+10, d0+w+150, e0+h+135); 
+    if(charViewer == null && viewer != null) {
+     charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+135); 
     }
   }
   

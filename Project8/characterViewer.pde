@@ -58,7 +58,7 @@ class charViewerBox {
     }
     
   }
-
+  
   void draw() {
 
     rectMode(CORNERS);
@@ -73,16 +73,21 @@ class charViewerBox {
 }
 
 class characterViewer {
+
+  groupViewer viewerReference;
   
   float topLeftX, topLeftY, bottomRightX, bottomRightY;
   ArrayList<ArrayList<charViewerBox>> buttons =  new ArrayList<ArrayList<charViewerBox>>();
   
-  float textSpacing = 65;
-  float boxSpacing = 62;
+  float textSpacing = 20;
+  float boxSpacingWidth = 150;
+  float boxSpacingHeight = 40;
   
- characterViewer(float _tLX, float _tLY, float _bRX, float _bRY) {
+  int cliqueIndex = -1;
+   
+ characterViewer(groupViewer graph, float _tLX, float _tLY, float _bRX, float _bRY) {
  
- 
+    viewerReference = graph;
     topLeftX = _tLX;
     topLeftY = _tLY; 
     bottomRightX = _bRX; 
@@ -107,22 +112,48 @@ class characterViewer {
  }
  
   void setPositions(ArrayList<characterNode> clique, ArrayList<charViewerBox> buttons) {
-    int i = 0;
+    int i = 0; // used for rows
+    int j = 0;  // used for columns
+    int k = 0; // used for names
     while(buttons.size() < clique.size()) {
-     String name = "Group " + (i+1);
-     charViewerBox button = new charViewerBox(name, topLeftX, topLeftY + boxSpacing*i, bottomRightX, topLeftY + boxSpacing*(i+1));
+     String name = clique.get(k).character.getString("id");
+     charViewerBox button = new charViewerBox(name, topLeftX + boxSpacingWidth*i, topLeftY + boxSpacingHeight*j, topLeftX + boxSpacingWidth * (i+1), 
+                                              topLeftY + boxSpacingHeight*(j+1));
      buttons.add(button);
-     ++i;
+     j = (j+1) % 3; // 3 characters in a column
+     k++;
+     if(j == 0) {  // start a new column
+       ++i;
+       
+     }
+     
         println(buttons.size());
     
     }
 
   }
+  
+  void selectGroup(int i) {
+    if(i > 0 && i <= 10) {
+    cliqueIndex = i;
+    populateViewer();
+    }
+  }
+  
+  void populateViewer() {
+    
+   ArrayList<charViewerBox> characters = buttons.get(cliqueIndex);
+   for(charViewerBox box : characters) {
+    box.draw(); 
+   }
+  }
+
  
  void draw() {
   rectMode(CORNERS);
   fill(255);
   rect(topLeftX, topLeftY, bottomRightX, bottomRightY);
+  selectGroup((viewerReference.pressIndex));
  }
   
   
