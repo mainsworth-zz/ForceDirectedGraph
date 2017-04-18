@@ -4,6 +4,7 @@ class ForceGraph {
   ArrayList<characterNode> cast = new ArrayList<characterNode>(); // holds the references of the nodes in memory
   
   characterNode gravityNode;
+  groupViewer viewer;
   
   boolean dataLoaded = false;
   
@@ -46,7 +47,6 @@ class ForceGraph {
       gravityNode = new characterNode(this);
       populationCreation(characters);
       createRelationships(relationships);
-
 
       println("Loaded data.");
       dataLoaded = true;
@@ -164,7 +164,9 @@ class ForceGraph {
     e0 = _e0;
     w = _w;
     h = _h;
-   
+    if(viewer == null) {
+    viewer = new groupViewer(d0+w+5, e0, d0+w+150, e0+_h);
+    }
   }
   
   void createCast() {
@@ -221,5 +223,6 @@ class ForceGraph {
 //         node2.createNode();
 
       }      
+      viewer.draw();
   } 
 }
