@@ -8,7 +8,7 @@ class characterNode {
    PVector coordinates = new PVector();
    
    int nodeSize = 30;
-   float mass = 350.0;
+   float mass = 35.0;
    PVector velocity = new PVector();
    color nodeColor;
    
@@ -105,11 +105,12 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-//     characterNode character2 = cast.get(15);
+     PVector result;
+     characterNode character2 = cast.get(15);
 
       
-      for (characterNode character2 : cast) {
-        if(coordinates.dist(character2.coordinates) != 0) {
+//      for (characterNode character2 : cast) {
+//        if(coordinates.dist(character2.coordinates) != 0) {
         directionalVector = coordinates.copy(); // P
 
         directionalVector.sub(character2.coordinates); // (P - Q as numerator)
@@ -120,13 +121,13 @@ class characterNode {
         value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
 //        println("-: " + value);
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-//        println("-: " + directionalVector.x + ", " + directionalVector.y);
-        sumVectors.add(directionalVector);      
-        }
+        println("-: " + directionalVector.x + ", " + directionalVector.y);
+        result = PVector.add(sumVectors, directionalVector);      
+//        }
       
-    }
+//    }
 //    println(sumVectors.x + ", " + sumVectors.y);
-    return sumVectors;
+    return result;
     
   }
   
@@ -136,27 +137,28 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-//     characterNode character2 = cast.get(15);
+          PVector result;
+     characterNode character2 = cast.get(15);
 
       // only have attraction towards linked nodes
-      for (characterLink link : relationships) {
-        if(link.target.coordinates.dist(coordinates) != 0) {
-        directionalVector = link.target.coordinates.copy(); // Q
-
+//      for (characterLink link : relationships) {
+//       if(link.target.coordinates.dist(coordinates) != 0) {
+          directionalVector = character2.coordinates.copy();
+//        directionalVector = link.target.coordinates.copy(); // Q
         directionalVector.sub(coordinates); // (Q - P as numerator)
 //        println(character2.coordinates.dist(coordinates));
-        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
-       
-        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
+//        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
+          directionalVector.div(coordinates.dist(character2.coordinates));
+//        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
+          value = attractionConstant * abs(coordinates.dist(character2.coordinates) - springLength);
 //       println("+: " + value);
-//        value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
 
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-//        println("+: " + directionalVector.x + ", " + directionalVector.y);
-        sumVectors.add(directionalVector);      
-        }
-      }
-    return sumVectors;
+        println("+: " + directionalVector.x + ", " + directionalVector.y);
+        result = PVector.add(sumVectors,directionalVector);      
+ //       }
+//      }
+    return result;
   }
   
     PVector calculateVelocity(ArrayList<characterNode> cast) {
@@ -165,14 +167,14 @@ class characterNode {
 //    println(rVector.x + ", " + rVector.y);
     PVector aVector = calculateAttractions(cast).copy();
     
-    rVector.add(aVector);
-    rVector.div(mass);
-    rVector.mult(timeStep);
+    PVector result = PVector.add(rVector, aVector);
+    result.div(mass);
+    result.mult(timeStep);
 //    rVector.add(
-    velocity.add(rVector);
-//   println(velocity.x + ", " + velocity.y);
+    velocity.add(result);
+   println(velocity.x + ", " + velocity.y);
 
-    return velocity;
+    return result;
    
   }
   

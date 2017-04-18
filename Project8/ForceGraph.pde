@@ -10,10 +10,10 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
-  float attractionConstant = 0.005;
-  float repulsionConstant = 0.01;
+  float attractionConstant = 0.5;
+  float repulsionConstant = 1;
   float springLength = 51.0;
-  float timeStep = 0.75;
+  float timeStep = 0.45;
   
   boolean placed = false;
   
@@ -192,24 +192,24 @@ class ForceGraph {
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
-//      characterNode node = cast.get(5);
-//      characterNode node2 = cast.get(15);
+      characterNode node = cast.get(5);
+      characterNode node2 = cast.get(15);
             fill(255);
       rectMode(CORNERS);
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
 //      createCast();
-      drawLines();
+//      drawLines();
 //      calculateAttractions();
 //      calculateRepulsions();
 
 //      calculateAttractions();
 //      attractionFunction();
-      for (characterNode node : cast) {
+//      for (characterNode node : cast) {
         node.calculatePosition(cast);
          node.createNode();
-//         node2.createNode();
+         node2.createNode();
 
-      }      
+//      }      
   } 
 }
