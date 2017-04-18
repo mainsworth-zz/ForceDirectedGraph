@@ -8,7 +8,7 @@ class characterNode {
    PVector coordinates = new PVector();
    
    int nodeSize = 30;
-   float mass = 35.0;
+   float mass = 350.0;
    PVector velocity = new PVector();
    color nodeColor;
    
@@ -19,6 +19,12 @@ class characterNode {
   
   int sumRepulsions = 0;
   
+  characterNode(ForceGraph reference) { // overloaded constructor for center, invisible node
+    float x_value = (reference.d0 + reference.w)/2;
+    float y_value = (reference.e0 + reference.h)/2;
+    coordinates.set(x_value, y_value);
+    
+  }
   
   characterNode(JSONObject data, ForceGraph reference) {
     graphReference = reference;
@@ -45,6 +51,12 @@ class characterNode {
     nodeColor = newColor;
   }
   
+  void addRelationship(characterNode node) {
+    characterLink newRelationship = new characterLink(this, node);
+    relationships.add(newRelationship);
+    
+  }
+  
   void addRelationship(String nameTarget, ArrayList<characterNode> cast) {
     for(int i = 0; i < cast.size(); i++) {
       characterNode target = cast.get(i);
@@ -66,9 +78,9 @@ class characterNode {
     float x1, x2, y1, y2;
     x1 = coordinates.x;
     y1 = coordinates.y;
-   for(characterLink link : relationships) {
-     x2 = link.target.coordinates.x;
-     y2 = link.target.coordinates.y;
+   for(int i = 0; i < relationships.size(); i++) {
+     x2 = relationships.get(i).target.coordinates.x;
+     y2 = relationships.get(i).target.coordinates.y;
      
      line(x1, y1, x2, y2);
    }
@@ -98,7 +110,6 @@ class characterNode {
       
       for (characterNode character2 : cast) {
         if(coordinates.dist(character2.coordinates) != 0) {
-        println("True");
         directionalVector = coordinates.copy(); // P
 
         directionalVector.sub(character2.coordinates); // (P - Q as numerator)
@@ -127,22 +138,23 @@ class characterNode {
      PVector mouseCursor = new PVector(mouseX, mouseY);
 //     characterNode character2 = cast.get(15);
 
-      
-      for (characterNode character2 : cast) {
-        directionalVector = character2.coordinates.copy(); // Q
+      // only have attraction towards linked nodes
+      for (characterLink link : relationships) {
+        if(link.target.coordinates.dist(coordinates) != 0) {
+        directionalVector = link.target.coordinates.copy(); // Q
 
         directionalVector.sub(coordinates); // (Q - P as numerator)
 //        println(character2.coordinates.dist(coordinates));
-        directionalVector.div(character2.coordinates.dist(coordinates)); // vector normalized by the distance
+        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
        
-        value = attractionConstant * (coordinates.dist(character2.coordinates) - springLength); // attraction formula
+        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
 //       println("+: " + value);
 //        value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
 
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
 //        println("+: " + directionalVector.x + ", " + directionalVector.y);
         sumVectors.add(directionalVector);      
-
+        }
       }
     return sumVectors;
   }
@@ -151,9 +163,9 @@ class characterNode {
    
     PVector rVector = calculateRepulsions(cast).copy();
 //    println(rVector.x + ", " + rVector.y);
-//    PVector aVector = calculateAttractions(cast).copy();
+    PVector aVector = calculateAttractions(cast).copy();
     
-//    rVector.add(aVector);
+    rVector.add(aVector);
     rVector.div(mass);
     rVector.mult(timeStep);
 //    rVector.add(
@@ -166,16 +178,17 @@ class characterNode {
   
   void calculatePosition(ArrayList<characterNode> cast) {
     PVector timeStepVector = calculateVelocity(cast).copy();
-    characterNode character2 = cast.get(15);
+    
 
     timeStepVector.mult(timeStep);
 //    print("timeStepVector : ");
 //    println(timeStepVector.x + ", " + timeStepVector.y);
 //    print("Added to coordinates: ");
-
-//  if(coordinates.dist(character2.coordinates) > 65) {
-//    updatePosition(timeStepVector);
- // }
+for(int i = 0; i < relationships.size(); i++) {
+  if(coordinates.dist(relationships.get(i).target.coordinates) > 65) {
+    updatePosition(timeStepVector);
+  }
+  }
   }
   
   void updatePosition(PVector newPosition) {

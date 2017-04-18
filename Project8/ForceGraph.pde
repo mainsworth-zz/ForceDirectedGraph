@@ -10,8 +10,8 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
-  float attractionConstant = 0.005;
-  float repulsionConstant = 0.1;
+  float attractionConstant = 0.05;
+  float repulsionConstant = 0.01;
   float springLength = 51.0;
   float timeStep = 0.75;
   
@@ -43,6 +43,7 @@ class ForceGraph {
 //        println(object.getString("source"));
         
       }
+      gravityNode = new characterNode(this);
       populationCreation(characters);
       createRelationships(relationships);
 
@@ -130,7 +131,11 @@ class ForceGraph {
                individual.addRelationship(chain.getString("target"), cast);
             }
          }
+         
+         individual.addRelationship(gravityNode);
     }
+    
+
   }
   
     
@@ -175,7 +180,7 @@ class ForceGraph {
   }
   
   
- 
+
   
 
   
@@ -194,7 +199,7 @@ class ForceGraph {
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
 //      createCast();
-//      drawLines();
+      drawLines();
 //      calculateAttractions();
 //      calculateRepulsions();
 
