@@ -3,7 +3,7 @@ class characterNode {
 
    ForceGraph graphReference;
    JSONObject character; // data structure for character values
-   ArrayList<characterLink> relationships = new ArrayList<characterLink>();
+   ArrayList<characterLink> relationships = new ArrayList<characterLink>(); // aka adjacency list through edges
    
    PVector coordinates = new PVector();
    
@@ -105,12 +105,13 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-     PVector result;
-     characterNode character2 = cast.get(15);
+     PVector subResult;
+     PVector result = new PVector();
+//     characterNode character2 = cast.get(15);
 
       
-//      for (characterNode character2 : cast) {
-//        if(coordinates.dist(character2.coordinates) != 0) {
+      for (characterNode character2 : cast) {
+        if(coordinates.dist(character2.coordinates) != 0) {
         directionalVector = coordinates.copy(); // P
 
         directionalVector.sub(character2.coordinates); // (P - Q as numerator)
@@ -121,11 +122,12 @@ class characterNode {
         value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
 //        println("-: " + value);
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-        println("-: " + directionalVector.x + ", " + directionalVector.y);
-        result = PVector.add(sumVectors, directionalVector);      
-//        }
+//        println("-: " + directionalVector.x + ", " + directionalVector.y);
+        subResult = PVector.add(sumVectors, directionalVector); 
+        result = PVector.add(subResult, result);   
+        }
       
-//    }
+    }
 //    println(sumVectors.x + ", " + sumVectors.y);
     return result;
     
@@ -137,27 +139,29 @@ class characterNode {
      PVector directionalVector;
      PVector newTest;
      PVector mouseCursor = new PVector(mouseX, mouseY);
-          PVector result;
-     characterNode character2 = cast.get(15);
+     PVector result = new PVector();
+     PVector subResult = new PVector();
+//     characterNode character2 = cast.get(15);
 
       // only have attraction towards linked nodes
-//      for (characterLink link : relationships) {
-//       if(link.target.coordinates.dist(coordinates) != 0) {
-          directionalVector = character2.coordinates.copy();
-//        directionalVector = link.target.coordinates.copy(); // Q
+      for (characterLink link : relationships) {
+       if(link.target.coordinates.dist(coordinates) != 0) {
+//          directionalVector = character2.coordinates.copy();
+        directionalVector = link.target.coordinates.copy(); // Q
         directionalVector.sub(coordinates); // (Q - P as numerator)
 //        println(character2.coordinates.dist(coordinates));
-//        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
-          directionalVector.div(coordinates.dist(character2.coordinates));
-//        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
-          value = attractionConstant * abs(coordinates.dist(character2.coordinates) - springLength);
+        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
+//          directionalVector.div(coordinates.dist(character2.coordinates));
+        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
+//          value = attractionConstant * abs(coordinates.dist(character2.coordinates) - springLength);
 //       println("+: " + value);
 
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-        println("+: " + directionalVector.x + ", " + directionalVector.y);
-        result = PVector.add(sumVectors,directionalVector);      
- //       }
-//      }
+//        println("+: " + directionalVector.x + ", " + directionalVector.y);
+        subResult = PVector.add(sumVectors, directionalVector);
+        result = PVector.add(subResult,result);      
+        }
+      }
     return result;
   }
   
@@ -172,7 +176,7 @@ class characterNode {
     result.mult(timeStep);
 //    rVector.add(
     velocity.add(result);
-   println(velocity.x + ", " + velocity.y);
+//   println(velocity.x + ", " + velocity.y);
 
     return result;
    

@@ -11,24 +11,24 @@ class ForceGraph {
   int d0, e0, w, h;
   
   float attractionConstant = 0.5;
-  float repulsionConstant = 1;
+  float repulsionConstant = 100;
   float springLength = 51.0;
   float timeStep = 0.45;
   
   boolean placed = false;
   
   // color chart
-  color grey = color(205);
-  color groupOne = color(255, 0, 0);
-  color groupTwo = color(0, 255, 0);
-  color groupThree = color(0, 0, 255);
-  color groupFour = color(0,0,0);
-  color groupFive = color(0,0,0);
-  color groupSix = color(0,0,0);
-  color groupSeven = color(0,0,0);
-  color groupEight = color(0,0,0);
-  color groupNine = color(0,0,0);
-  color groupTen = color(0,0,0);
+  color grey = color(205); 
+  color groupOne = color(255, 0, 0); // red
+  color groupTwo = color(0, 255, 0); // green
+  color groupThree = color(0, 0, 255); // blue
+  color groupFour = color(0,255,255); // teal
+  color groupFive = color(153,0,153); // purple
+  color groupSix = color(204,0,102); // maroon
+  color groupSeven = color(255,255,0); // yellow
+  color groupEight = color(255,153,153); // salmon
+  color groupNine = color(0,51,102); // navy
+  color groupTen = color(128,128,128); // grey
   
   ForceGraph() {
        
@@ -192,24 +192,24 @@ class ForceGraph {
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
-      characterNode node = cast.get(5);
-      characterNode node2 = cast.get(15);
+//      characterNode node = cast.get(5);
+//      characterNode node2 = cast.get(15);
             fill(255);
       rectMode(CORNERS);
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
 //      createCast();
-//      drawLines();
+      drawLines();
 //      calculateAttractions();
 //      calculateRepulsions();
 
 //      calculateAttractions();
 //      attractionFunction();
-//      for (characterNode node : cast) {
+      for (characterNode node : cast) {
         node.calculatePosition(cast);
          node.createNode();
-         node2.createNode();
+//         node2.createNode();
 
-//      }      
+      }      
   } 
 }
