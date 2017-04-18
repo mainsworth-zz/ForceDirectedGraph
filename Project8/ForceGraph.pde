@@ -68,42 +68,52 @@ class ForceGraph {
            
            case 1: 
                    person.setColor(groupOne);
+                   person.groupColor = groupOne;
                    break;
            
            case 2: 
                    person.setColor(groupTwo);
+                   person.groupColor = groupTwo;
                    break;
            
            case 3: 
                    person.setColor(groupThree);
+                   person.groupColor = groupThree;
                    break;
            
            case 4:
                    person.setColor(groupFour);
+                   person.groupColor = groupFour;
                    break;
            
            case 5: 
                    person.setColor(groupFive);
+                   person.groupColor = groupFive;
                    break;
            
            case 6: 
                    person.setColor(groupSix);
+                   person.groupColor = groupSix;
                    break;
            
            case 7: 
                    person.setColor(groupSeven);
+                   person.groupColor = groupSeven;
                    break;
            
            case 8:
                    person.setColor(groupEight);
+                   person.groupColor = groupEight;
                    break;
            
            case 9:
                    person.setColor(groupNine);
+                   person.groupColor = groupNine;
                    break;
            
            case 10:
                    person.setColor(groupTen);
+                   person.groupColor = groupTen;
                    break;
                    
          }
@@ -206,8 +216,8 @@ class ForceGraph {
 //      calculateAttractions();
 //      attractionFunction();
       for (characterNode node : cast) {
-        node.calculatePosition(cast);
-         node.createNode();
+          node.calculatePosition(cast);
+          node.draw();
 //         node2.createNode();
 
       }      

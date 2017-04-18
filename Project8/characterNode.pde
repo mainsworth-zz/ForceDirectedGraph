@@ -11,6 +11,7 @@ class characterNode {
    float mass = 35.0;
    PVector velocity = new PVector();
    color nodeColor;
+   color groupColor;
    
    float repulsionConstant;
    float attractionConstant;
@@ -222,7 +223,33 @@ for(int i = 0; i < relationships.size(); i++) {
    
   }
   
-
   
+  boolean overCircle(float x, float y, float diameter) {
+  float disX = x - mouseX;
+  float disY = y - mouseY;
+  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
+    return true;
+  } else {
+    return false;
+    }
+  }
+  
+  void overNode() {
+   
+    if(overCircle(coordinates.x, coordinates.y, nodeSize)) {
+      setColor(205);
+    }
+    
+    else {
+      setColor(groupColor);
+      
+    }
+  }
+
+  void draw() {
+      createNode();
+      overNode();
+    
+  }
   
 }
