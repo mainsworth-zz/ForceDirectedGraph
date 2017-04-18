@@ -10,7 +10,12 @@ class ForceGraph {
   // dimensions of the graph
   int d0, e0, w, h;
   
-  int repulsionConstant = 1;
+  float attractionConstant = .005;
+  float repulsionConstant = 25;
+  float springLength = 10.0;
+  float timeStep = 0.15;
+  
+  boolean placed = false;
   
   // color chart
   color grey = color(205);
@@ -35,7 +40,7 @@ class ForceGraph {
       JSONArray relationships = data.getJSONArray("links");
       for (int i = 0; i < relationships.size(); i++) {
         JSONObject object = relationships.getJSONObject(i);
-        println(object.getString("source"));
+//        println(object.getString("source"));
         
       }
       populationCreation(characters);
@@ -121,7 +126,7 @@ class ForceGraph {
             
 //            println(i + ", " + j + ": " + individual.character.getString("id") + " vs. " + chain.getString("source"));
             if(individual.character.getString("id").equals(chain.getString("source"))){
-              println("Found link.");
+//              println("Found link.");
                individual.addRelationship(chain.getString("target"), cast);
             }
          }
@@ -169,33 +174,40 @@ class ForceGraph {
     
   }
   
-  void repulsionFunction() {
+  // centers nodes
+  void attractionFunction() {
    
-    int x = 0;
-    int y = 0;
+    float x = 0;
+    float y = 0;
 
     for (characterNode character : cast) {
      
-        x = character.x;
-        y = character.y;
+        x = character.coordinates.x;
+        y = character.coordinates.y;
         
-        if(x > width/2) {
-         x = x + repulsionConstant; 
+        if(x > (d0 + w)/2) {
+         x -= attractionConstant; 
         }
-        else if (x <= width/2){
-         x = x - repulsionConstant; 
-        }
-        
-        if (y < height/2) {
-         y = y - repulsionConstant; 
+        else if (x <= (d0 + w)/2){
+         x += attractionConstant; 
         }
         
-        else if (y >= height/2) {
-         y = y + repulsionConstant; 
+        if (y < (e0 + h)/2) {
+         y += attractionConstant; 
         }
-        character.updatePosition(x, y);
+        
+        else if (y >= (e0 + h)/2) {
+         y -= attractionConstant; 
+        }
+//        character.updatePosition(x, y);
     }
   }
+  
+ 
+  
+
+  
+  
   void draw() {
     
        // restricts the draw function to the dimensions of the graph
@@ -203,12 +215,24 @@ class ForceGraph {
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
+      characterNode node = cast.get(5);
+      characterNode node2 = cast.get(15);
             fill(255);
       rectMode(CORNERS);
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
-      createCast();
-      drawLines();
-      repulsionFunction();
+//      createCast();
+//      drawLines();
+//      calculateAttractions();
+//      calculateRepulsions();
+
+//      calculateAttractions();
+//      attractionFunction();
+//      for (characterNode node : cast) {
+         node.calculatePosition(cast);
+         node.createNode();
+         node2.createNode();
+         node.draw();
+//      }
   } 
 }
