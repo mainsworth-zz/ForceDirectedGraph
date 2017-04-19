@@ -1,4 +1,7 @@
-class charViewerBox {
+
+ class charViewerBox {
+  
+  characterNode characterReference;
  
   float topLeftX, topLeftY, bottomRightX, bottomRightY;
   String name;
@@ -7,8 +10,9 @@ class charViewerBox {
   
   boolean pressed = false;
   
-  charViewerBox(String groupNum, float _tLX, float _tLY, float _bRX, float _bRY) {
+  charViewerBox(characterNode reference, String groupNum, float _tLX, float _tLY, float _bRX, float _bRY) {
   
+    characterReference = reference;
     name = groupNum;
     topLeftX = _tLX;
     topLeftY = _tLY; 
@@ -16,8 +20,6 @@ class charViewerBox {
     bottomRightY = _bRY;
     currentColor = 255;
     
-//    pressed = true;
-
   }
   
    void printText() {
@@ -28,6 +30,7 @@ class charViewerBox {
     
   }
   
+  // functions to set pressed to true or false
   void setFlag() {
     
    pressed = true;
@@ -38,23 +41,26 @@ class charViewerBox {
    pressed = false; 
   }
   
+  // listener function for cursor
   boolean overRect() {
-  if (mouseX >= topLeftX && mouseX <= bottomRightX && 
-      mouseY >= topLeftY && mouseY <= bottomRightY) {
-    return true;
-  } else {
-    return false;
-  }
+    if (mouseX >= topLeftX && mouseX <= bottomRightX && 
+        mouseY >= topLeftY && mouseY <= bottomRightY) {
+      return true;
+    } else {
+      return false;
+    }
  
-}
+  }
   void highlightButton() {
    
     if(pressed) {
-     currentColor = 105;
+     currentColor = 205;
+     characterReference.setColor(105);
     }
     
     else {
      currentColor = 255;
+     characterReference.setColor(characterReference.groupColor);
     }
     
   }
@@ -74,20 +80,26 @@ class charViewerBox {
   
 }
 
-class characterViewer {
 
+ class characterViewer {
+
+  // object references
   groupViewer viewerReference;
-  
-  float topLeftX, topLeftY, bottomRightX, bottomRightY;
   ArrayList<ArrayList<charViewerBox>> buttons =  new ArrayList<ArrayList<charViewerBox>>();
   ArrayList<charViewerBox> currentSelection;
   
+  // dimensions of viewer
+  float topLeftX, topLeftY, bottomRightX, bottomRightY;
+  
+  // settings for boxes
   float textSpacing = 20;
   float boxSpacingWidth = 150;
   float boxSpacingHeight = 40;
   
+  
   int cliqueIndex = -1; // collection number
   int pressIndex = -1; // box in clique number
+   
    
  characterViewer(groupViewer graph, float _tLX, float _tLY, float _bRX, float _bRY) {
  
@@ -102,15 +114,14 @@ class characterViewer {
  } 
  
  void fillRoles(ArrayList<ArrayList<characterNode>> casts) {
+   
    if(buttons.size() < casts.size()) {
-   for(int i = 0; i < casts.size(); i++) {
-     
-     ArrayList<charViewerBox> groupButtons = new ArrayList<charViewerBox>();
-     setPositions(casts.get(i), groupButtons);
-     buttons.add(groupButtons);
-     println("Clique " + (i+1) + " number of buttons: " + groupButtons.size());
-   }
-      println("Finished cliques.");
+     for(int i = 0; i < casts.size(); i++) {
+       
+       ArrayList<charViewerBox> groupButtons = new ArrayList<charViewerBox>();
+       setPositions(casts.get(i), groupButtons);
+       buttons.add(groupButtons);
+     }
    }
 
  }
@@ -119,9 +130,11 @@ class characterViewer {
     int i = 0; // used for rows
     int j = 0;  // used for columns
     int k = 0; // used for names
+    
+    // creates a button for each member of the group
     while(buttons.size() < clique.size()) {
-     String name = clique.get(k).character.getString("id");
-     charViewerBox button = new charViewerBox(name, topLeftX + boxSpacingWidth*i, topLeftY + boxSpacingHeight*j, topLeftX + boxSpacingWidth * (i+1), 
+     String name = clique.get(k).character.getString("id"); // returns name of character
+     charViewerBox button = new charViewerBox(clique.get(i), name, topLeftX + boxSpacingWidth*i, topLeftY + boxSpacingHeight*j, topLeftX + boxSpacingWidth * (i+1), 
                                               topLeftY + boxSpacingHeight*(j+1));
      buttons.add(button);
      j = (j+1) % 3; // 3 characters in a column
@@ -131,26 +144,25 @@ class characterViewer {
        
      }
      
-        println(buttons.size());
+       
     
     }
 
   }
-  
+    
+   // prints boxes in characterViewer on bottom of screen based on selected group in groupViewer
    void checkSelection() {
     int i = 0;
     for(charViewerBox button : currentSelection) {
      if(button.overRect()) {
- //      println("Over it");
- //      fill(205);
+
+       fill(205);
       if(mousePressed) {
-        if(pressIndex != -1) {
-          println("Turned off button " + pressIndex);
+        if(pressIndex != -1 && pressIndex <= currentSelection.size()) {
           currentSelection.get(pressIndex).removeFlag();
         }
+
         pressIndex = i;
-        println("Pressed.");
-        println(pressIndex);
         button.setFlag();
         
         
@@ -162,14 +174,21 @@ class characterViewer {
     
   }
   
+  // selects group based on groupViewer Selection
   void selectGroup(int i) {
     if(i >= 0 && i <= 9) {
     cliqueIndex = i;
     populateViewer();
+    if(currentSelection != null && pressIndex != -1) {
+    currentSelection.get(pressIndex).pressed = false;
+    
+    }
+    pressIndex = -1;
     currentSelection = buttons.get(i); // allows reference calls
     }
   }
   
+  // prints boxes
   void populateViewer() {
     
    ArrayList<charViewerBox> characters = buttons.get(cliqueIndex);
@@ -180,10 +199,27 @@ class characterViewer {
 
  
  void draw() {
+   if(mousePressed && (mouseButton == RIGHT) && cliqueIndex != -1) {
+     cliqueIndex = -1; 
+   }
+   
   rectMode(CORNERS);
   fill(255);
   rect(topLeftX, topLeftY, bottomRightX, bottomRightY);
+  fill(0);
+  textSize(18);
+  textAlign(CENTER);
+  
+  // if no group is selected, show this text
+  if(cliqueIndex == -1) {
+    text("Left click on a group to highlight nodes by color.", 
+          topLeftX + (bottomRightX - topLeftX)/2, topLeftY + (bottomRightY - topLeftY)/2 - 20) ;
+    text("Right click on a group to de-select it.", topLeftX + (bottomRightX - topLeftX)/2, topLeftY + (bottomRightY - topLeftY)/2 + 20);
+  }
+  
+  fill(255);
   selectGroup((viewerReference.pressIndex));
+  
   if(currentSelection != null) {
     checkSelection();
   }

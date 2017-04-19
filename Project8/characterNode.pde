@@ -12,6 +12,7 @@ class characterNode {
    PVector velocity = new PVector();
    color nodeColor;
    color groupColor;
+   color groupHighlightColor;
    
    float repulsionConstant;
    float attractionConstant;
@@ -107,11 +108,9 @@ class characterNode {
      float value = 0.0;
      PVector sumVectors = new PVector(0,0);
      PVector directionalVector;
-     PVector newTest;
-     PVector mouseCursor = new PVector(mouseX, mouseY);
+
      PVector subResult;
      PVector result = new PVector();
-//     characterNode character2 = cast.get(15);
 
       
       for (characterNode character2 : cast) {
@@ -122,17 +121,16 @@ class characterNode {
         directionalVector.div(coordinates.dist(character2.coordinates)); // vector normalized by the distance
        
         value = repulsionConstant * mass * character2.mass;
-
         value = value / (coordinates.dist(character2.coordinates) * (coordinates.dist(character2.coordinates))); // at this point, is force value
-//        println("-: " + value);
+        
         directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-//        println("-: " + directionalVector.x + ", " + directionalVector.y);
+
         subResult = PVector.add(sumVectors, directionalVector); 
         result = PVector.add(subResult, result);   
         }
       
     }
-//    println(sumVectors.x + ", " + sumVectors.y);
+    
     return result;
     
   }
@@ -141,46 +139,43 @@ class characterNode {
      float value = 0.0;
      PVector sumVectors = new PVector(0,0);
      PVector directionalVector;
-     PVector newTest;
-     PVector mouseCursor = new PVector(mouseX, mouseY);
+
      PVector result = new PVector();
      PVector subResult = new PVector();
-//     characterNode character2 = cast.get(15);
+     
 
       // only have attraction towards linked nodes
       for (characterLink link : relationships) {
-       if(link.target.coordinates.dist(coordinates) != 0) {
-//          directionalVector = character2.coordinates.copy();
-        directionalVector = link.target.coordinates.copy(); // Q
-        directionalVector.sub(coordinates); // (Q - P as numerator)
-//        println(character2.coordinates.dist(coordinates));
-        directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
-//          directionalVector.div(coordinates.dist(character2.coordinates));
-        value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
-//          value = attractionConstant * abs(coordinates.dist(character2.coordinates) - springLength);
-//       println("+: " + value);
-
-        directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
-//        println("+: " + directionalVector.x + ", " + directionalVector.y);
-        subResult = PVector.add(sumVectors, directionalVector);
-        result = PVector.add(subResult,result);      
+         if(link.target.coordinates.dist(coordinates) != 0) {
+  
+          directionalVector = link.target.coordinates.copy(); // Q
+          directionalVector.sub(coordinates); // (Q - P as numerator)
+          directionalVector.div(link.target.coordinates.dist(coordinates)); // vector normalized by the distance
+          
+          value = attractionConstant * (coordinates.dist(link.target.coordinates) - springLength); // attraction formula
+  
+          directionalVector.mult(value); // numerical number of force by slide 8 applied to vector
+          subResult = PVector.add(sumVectors, directionalVector);
+          
+          result = PVector.add(subResult,result);      
+          
+          }
         }
-      }
-    return result;
-  }
+      
+      return result;
+    }
   
     PVector calculateVelocity(ArrayList<characterNode> cast) {
    
-    PVector rVector = calculateRepulsions(cast).copy();
-//    println(rVector.x + ", " + rVector.y);
-    PVector aVector = calculateAttractions(cast).copy();
+    PVector rVector = calculateRepulsions(cast).copy(); // repulsion vector
+
+    PVector aVector = calculateAttractions(cast).copy(); // attraction vector
     
     PVector result = PVector.add(rVector, aVector);
     result.div(mass);
     result.mult(timeStep);
-//    rVector.add(
+
     velocity.add(result);
-//   println(velocity.x + ", " + velocity.y);
 
     return result;
    
@@ -191,18 +186,17 @@ class characterNode {
     
 
     timeStepVector.mult(timeStep);
-//    print("timeStepVector : ");
-//    println(timeStepVector.x + ", " + timeStepVector.y);
-//    print("Added to coordinates: ");
-for(int i = 0; i < relationships.size(); i++) {
-  if(coordinates.dist(relationships.get(i).target.coordinates) > 65) {
-    updatePosition(timeStepVector);
-  }
-  }
+
+    for(int i = 0; i < relationships.size(); i++) {
+        if(coordinates.dist(relationships.get(i).target.coordinates) > 65) {
+          updatePosition(timeStepVector);
+        }
+      }
   }
   
   void updatePosition(PVector newPosition) {
 
+    // restricts nodes to window
     if( ((coordinates.x - newPosition.x - nodeSize - 5) >= graphReference.d0) && 
         ((coordinates.x + newPosition.x - nodeSize) <= graphReference.d0 + graphReference.w - nodeSize - 15)) {
       coordinates.x += newPosition.x;
@@ -226,20 +220,21 @@ for(int i = 0; i < relationships.size(); i++) {
    
   }
   
-  
-  boolean overCircle(float x, float y, float diameter) {
-  float disX = x - mouseX;
-  float disY = y - mouseY;
-  if(sqrt(sq(disX) + sq(disY)) < diameter/2 ) {
-    return true;
-  } else {
-    return false;
-    }
+  // function to check if cursor is over circle
+  boolean overCircle() {
+    float disX = coordinates.x - mouseX;
+    float disY = coordinates.y - mouseY;
+    if(sqrt(sq(disX) + sq(disY)) < nodeSize/2 ) {
+      return true;
+        } else {
+      return false;
+      }
   }
+  
   
   void overNode() {
    
-    if(overCircle(coordinates.x, coordinates.y, nodeSize)) {
+    if(overCircle()) {
       setColor(205);
     }
     

@@ -1,28 +1,26 @@
 
 class ForceGraph {
-  
-  ArrayList<characterNode> cast = new ArrayList<characterNode>(); // holds the references of the nodes in memory
-  
-  characterNode gravityNode;
+  // object references
   groupViewer viewer;
   characterViewer charViewer;
+  characterNode gravityNode;
+
+  ArrayList<characterNode> cast = new ArrayList<characterNode>(); // holds the references of the nodes in memory
+  ArrayList<ArrayList<characterNode>> metaCasts = new ArrayList<ArrayList<characterNode>>(); // holds 10 arrays, one for each group
   
-  boolean dataLoaded = false;
+  boolean dataLoaded = false; // one-time flag to ensure data isn't re-loaded 
   
   // dimensions of the graph
   int d0, e0, w, h;
   
+  // physics constants
   float attractionConstant = 0.5;
   float repulsionConstant = 100;
   float springLength = 51.0;
   float timeStep = 0.45;
   
-  ArrayList<ArrayList<characterNode>> metaCasts = new ArrayList<ArrayList<characterNode>>(); // holds 10 arrays, one for each group
   
-  
-  boolean placed = false;
-  
-  int groupSelected = -1;
+  int groupSelected = -1; // keeps track of currently selected group
   
   // color chart
   color grey = color(205); 
@@ -37,19 +35,17 @@ class ForceGraph {
   color groupNine = color(0,51,102); // navy
   color groupTen = color(128,128,128); // grey
   
+  
   ForceGraph() {
        
   }
   
+
   void loadData(JSONObject data) {
       if(data != null && !dataLoaded) {
       JSONArray characters = data.getJSONArray("nodes");
       JSONArray relationships = data.getJSONArray("links");
-      for (int i = 0; i < relationships.size(); i++) {
-        JSONObject object = relationships.getJSONObject(i);
-//        println(object.getString("source"));
-        
-      }
+
       gravityNode = new characterNode(this);
       populationCreation(characters);
       createRelationships(relationships);
@@ -58,6 +54,19 @@ class ForceGraph {
       dataLoaded = true;
     }
     
+  }
+  
+  void setPosition (int _d0, int _e0, int _w, int _h) {
+    d0 = _d0;
+    e0 = _e0;
+    w = _w;
+    h = _h;
+    if(viewer == null) {
+    viewer = new groupViewer(this, d0+w+5, e0, d0+w+150, e0+_h);
+    }
+    if(charViewer == null && viewer != null) {
+     charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+135); 
+    }
   }
   
   // places characters into nodes, stored into ArrayList
@@ -81,6 +90,8 @@ class ForceGraph {
          characterNode person = new characterNode(individual, this);
          int colorCode = individual.getInt("group");
          
+         
+         // assigns color by group
          switch (colorCode) {
            
            case 1: 
@@ -149,6 +160,7 @@ class ForceGraph {
          
        }
        
+       // add finished lists into 2D array
        metaCasts.add(groupOneArray);
        metaCasts.add(groupTwoArray);
        metaCasts.add(groupThreeArray);
@@ -174,9 +186,7 @@ class ForceGraph {
            
             JSONObject chain = relationships.getJSONObject(j);
             
-//            println(i + ", " + j + ": " + individual.character.getString("id") + " vs. " + chain.getString("source"));
             if(individual.character.getString("id").equals(chain.getString("source"))){
-//              println("Found link.");
                individual.addRelationship(chain.getString("target"), cast);
             }
          }
@@ -187,28 +197,14 @@ class ForceGraph {
 
   }
   
-    
+  // show lines between each node that has a relationship to each other
   void drawLines() {
     
     for(characterNode character : cast) {
-     // println(character.character.getString("id")); <- working
       character.drawLine();
     }
     
     
-  }
-  
-  void setPosition (int _d0, int _e0, int _w, int _h) {
-    d0 = _d0;
-    e0 = _e0;
-    w = _w;
-    h = _h;
-    if(viewer == null) {
-    viewer = new groupViewer(this, d0+w+5, e0, d0+w+150, e0+_h);
-    }
-    if(charViewer == null && viewer != null) {
-     charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+135); 
-    }
   }
   
   void createCast() {
@@ -232,49 +228,37 @@ class ForceGraph {
     }
     
   }
-  
-  
-
-  
-
-  
+   
   
   void draw() {
       int check = 0;
+      
        // restricts the draw function to the dimensions of the graph
       float plotMinD = d0;
       float plotMaxD = d0 + w;
       float plotMinE = e0 + h;
       float plotMaxE = e0;
-//      characterNode node = cast.get(5);
-//      characterNode node2 = cast.get(15);
-            fill(255);
+
+      fill(255);
       rectMode(CORNERS);
       
       rect ( plotMinD, plotMaxE, plotMaxD, plotMinE); //border
-//      createCast();
       drawLines();
-//      calculateAttractions();
-//      calculateRepulsions();
 
-//      calculateAttractions();
-//      attractionFunction();
+      // iterate through all nodes
       for (characterNode node : cast) {
         check = node.character.getInt("group");
         check--;
-        if(check != groupSelected && groupSelected != -1){
-          node.setColor(grey);
+        
+        if(check != groupSelected && groupSelected != -1){ // if this is not the selected group, assuming we have one
+          node.setColor(grey); // make it grey to allow for highlighting of selected group
         }
           node.calculatePosition(cast);
           node.draw();
-//         node2.createNode();
 
       }      
       viewer.draw();
-      int i = 0;
-       charViewer.fillRoles(metaCasts); 
-       
-      
+      charViewer.fillRoles(metaCasts); 
       charViewer.draw();
   } 
 }
