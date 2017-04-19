@@ -20,6 +20,9 @@ class characterNode {
   
   int sumRepulsions = 0;
   
+  boolean selected = false;
+  boolean greyOut = false;
+  
   characterNode(ForceGraph reference) { // overloaded constructor for center, invisible node
     float x_value = (reference.d0 + reference.w)/2;
     float y_value = (reference.e0 + reference.h)/2;

@@ -75,6 +75,7 @@ class viewerBox {
 
 class groupViewer {
   
+  ForceGraph graphReference;
   float topLeftX, topLeftY, bottomRightX, bottomRightY, viewerWidth, viewerHeight;
 
   float textSpacing = 65;
@@ -85,8 +86,10 @@ class groupViewer {
   int pressIndex = -1;
 
   // constructor
-  groupViewer(float _tLX, float _tLY, float _bRX, float _bRY) {
+  groupViewer(ForceGraph reference, float _tLX, float _tLY, float _bRX, float _bRY) {
    // sets dimensions of viewer
+    graphReference = reference;
+    
     topLeftX = _tLX;
     topLeftY = _tLY; 
     bottomRightX = _bRX; 
@@ -134,6 +137,12 @@ class groupViewer {
     }
     
   }
+  
+  void highlightGroup() {
+   
+    graph.groupSelected = pressIndex;
+    
+  }
 
   
   void draw() {
@@ -146,6 +155,7 @@ class groupViewer {
     button.draw(); 
      
    }
+   highlightGroup();
   }
   
   

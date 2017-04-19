@@ -59,6 +59,8 @@ class charViewerBox {
     
   }
   
+
+  
   void draw() {
 
     rectMode(CORNERS);
@@ -78,12 +80,14 @@ class characterViewer {
   
   float topLeftX, topLeftY, bottomRightX, bottomRightY;
   ArrayList<ArrayList<charViewerBox>> buttons =  new ArrayList<ArrayList<charViewerBox>>();
+  ArrayList<charViewerBox> currentSelection;
   
   float textSpacing = 20;
   float boxSpacingWidth = 150;
   float boxSpacingHeight = 40;
   
-  int cliqueIndex = -1;
+  int cliqueIndex = -1; // collection number
+  int pressIndex = -1; // box in clique number
    
  characterViewer(groupViewer graph, float _tLX, float _tLY, float _bRX, float _bRY) {
  
@@ -133,10 +137,36 @@ class characterViewer {
 
   }
   
+   void checkSelection() {
+    int i = 0;
+    for(charViewerBox button : currentSelection) {
+     if(button.overRect()) {
+ //      println("Over it");
+ //      fill(205);
+      if(mousePressed) {
+        if(pressIndex != -1) {
+          println("Turned off button " + pressIndex);
+          currentSelection.get(pressIndex).removeFlag();
+        }
+        pressIndex = i;
+        println("Pressed.");
+        println(pressIndex);
+        button.setFlag();
+        
+        
+      }
+       
+     }
+     i++;
+    }
+    
+  }
+  
   void selectGroup(int i) {
-    if(i > 0 && i <= 10) {
+    if(i >= 0 && i <= 9) {
     cliqueIndex = i;
     populateViewer();
+    currentSelection = buttons.get(i); // allows reference calls
     }
   }
   
@@ -154,6 +184,9 @@ class characterViewer {
   fill(255);
   rect(topLeftX, topLeftY, bottomRightX, bottomRightY);
   selectGroup((viewerReference.pressIndex));
+  if(currentSelection != null) {
+    checkSelection();
+  }
  }
   
   

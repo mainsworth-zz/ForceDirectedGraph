@@ -22,6 +22,8 @@ class ForceGraph {
   
   boolean placed = false;
   
+  int groupSelected = -1;
+  
   // color chart
   color grey = color(205); 
   color groupOne = color(255, 0, 0); // red
@@ -202,7 +204,7 @@ class ForceGraph {
     w = _w;
     h = _h;
     if(viewer == null) {
-    viewer = new groupViewer(d0+w+5, e0, d0+w+150, e0+_h);
+    viewer = new groupViewer(this, d0+w+5, e0, d0+w+150, e0+_h);
     }
     if(charViewer == null && viewer != null) {
      charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+135); 
@@ -238,7 +240,7 @@ class ForceGraph {
   
   
   void draw() {
-    
+      int check = 0;
        // restricts the draw function to the dimensions of the graph
       float plotMinD = d0;
       float plotMaxD = d0 + w;
@@ -258,6 +260,11 @@ class ForceGraph {
 //      calculateAttractions();
 //      attractionFunction();
       for (characterNode node : cast) {
+        check = node.character.getInt("group");
+        check--;
+        if(check != groupSelected && groupSelected != -1){
+          node.setColor(grey);
+        }
           node.calculatePosition(cast);
           node.draw();
 //         node2.createNode();
