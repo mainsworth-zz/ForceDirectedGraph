@@ -1,4 +1,5 @@
 
+ // Object representing the list of characters at the bottom of the window
  class charViewerBox {
   
   characterNode characterReference;
@@ -84,7 +85,7 @@
  class characterViewer {
 
   // object references
-  groupViewer viewerReference;
+  groupViewer viewerReference; // needed to link which group has been selected to the viewer box
   ArrayList<ArrayList<charViewerBox>> buttons =  new ArrayList<ArrayList<charViewerBox>>();
   ArrayList<charViewerBox> currentSelection;
   
@@ -93,7 +94,7 @@
   
   // settings for boxes
   float textSpacing = 20;
-  float boxSpacingWidth = 150;
+  float boxSpacingWidth = 154;
   float boxSpacingHeight = 40;
   
   

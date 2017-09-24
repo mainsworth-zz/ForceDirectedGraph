@@ -5,6 +5,7 @@ class ForceGraph {
   characterViewer charViewer;
   characterNode gravityNode;
 
+  // arrays for holding characters and their respective nodes
   ArrayList<characterNode> cast = new ArrayList<characterNode>(); // holds the references of the nodes in memory
   ArrayList<ArrayList<characterNode>> metaCasts = new ArrayList<ArrayList<characterNode>>(); // holds 10 arrays, one for each group
   
@@ -61,11 +62,15 @@ class ForceGraph {
     e0 = _e0;
     w = _w;
     h = _h;
+    
+    // initializes group viewer
     if(viewer == null) {
     viewer = new groupViewer(this, d0+w+5, e0, d0+w+150, e0+_h);
     }
+    
+    // initializes character viewer only after group viewer has been created
     if(charViewer == null && viewer != null) {
-     charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+135); 
+     charViewer = new characterViewer(viewer, d0, e0+h+10, d0+w+150, e0+h+130); 
     }
   }
   

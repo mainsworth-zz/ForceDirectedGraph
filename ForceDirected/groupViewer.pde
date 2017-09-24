@@ -28,11 +28,13 @@ class viewerBox {
     
   }
   
+  // Function to designate which group has been selected
   void setFlag() {
-    
+     
    pressed = true;
   }
   
+  // removes flag showing that this group has been selected
   void removeFlag() {
     
    pressed = false; 
